@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="hint/hint.css">
+<link rel="icon" type="image/png" href="img/rugby.png" />
+<title>Les hommes du Top14</title>
+<style>
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
+  margin:0;
+  padding:0;
+  overflow-x: hidden;
+}
+
+#effectif{
+  background-color: #efefef;
+  position: relative;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #C3C3C3;
+  shape-rendering: auto;
+}
+
+.dot:hover{
+  stroke: #555;
+  stroke-width: 2px;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-size: 0.9em;
+  padding: 12px;
+  opacity: 0.5;
+  background: rgba(85,85,85,0.9);
+  color: #fff;
+  border-radius: 2px;
+}
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(85,85,85,0.9);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -2px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.poste{
+  width: 15px;
+  height: 15px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+#pi{
+background: #1F77B4;
+}
+#ta{
+background: #AEC7E8;
+}
+#de{
+background: #FF7F0E;
+}
+#tr{
+background: #FFBB78;
+}
+#me{
+background: #2CA02C;
+}
+#ou{
+background: #98DF8A;
+}
+#ce{
+background: #D62728;
+}
+#ai{
+background: #FF9896;
+}
+#ar{
+background: #9467BD;
+}
+
+#jiff{
+  background: #555;
+  border: solid 1px #fff;
+}
+
+.checkbox {
+  width: 25px;
+  position: relative;
+  display: inline-block;
+}
+.checkbox label {
+  cursor: pointer;
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  top: 0;
+  left: 0;
+  border-radius:2px;
+}
+.checkbox label:after {
+  opacity: 0.2;
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 5px;
+  background: transparent;
+  top: 3px;
+  left: 7px;
+  border: 3px solid #fff;
+  border-top: none;
+  border-right: none;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+.checkbox label:hover::after {
+  opacity: 0.5;
+}
+.checkbox input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
+
+
+.checkbox2 {
+  width: 35px;
+  position: relative;
+  display: inline;
+  float: left;
+  margin: 10px 3px 0 3px;
+}
+.checkbox2 input{
+  display: none;
+}
+.checkbox2 label {
+  opacity: 0.3;
+  cursor: pointer;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: 0;
+  left: 0;
+  background-size: contain;
+  background-color: #efefef;
+}
+.checkbox2 input[type=checkbox]:checked + label {
+  opacity: 1;
+}
+.checkbox2 span{
+  position: absolute;
+  margin-top: 40px;
+  text-align: center;
+}
+
+#ag{
+  background-image: url("img/agen.png");
+}
+#bo{
+  background-image: url("img/bordeaux.png"); 
+}
+#br{
+  background-image: url("img/brive.png"); 
+}
+#ca{
+  background-image: url("img/castres.png"); 
+}
+#cl{
+  background-image: url("img/clermont.png"); 
+}
+#gr{
+  background-image: url("img/grenoble.png"); 
+}
+#la{
+  background-image: url("img/larochelle.png"); 
+}
+#mo{
+  background-image: url("img/mhr.png"); 
+}
+#oy{
+  background-image: url("img/oyonnax.png"); 
+}
+#pa{
+  background-image: url("img/paris.png"); 
+}
+#pau{
+  background-image: url("img/pau.png"); 
+}
+#ra{
+  background-image: url("img/racing.png"); 
+}
+#tn{
+  background-image: url("img/toulon.png"); 
+}
+#ts{
+  background-image: url("img/toulouse.png"); 
+}
+
+.boxTeam{
+  display: inline;
+  text-align: right;
+}
+
+#filter1{
+  position: relative;
+  width: 600px;
+  padding: 0 0 0 5%;
+}
+
+#filter2, #filter3{
+  position: absolute;
+  top: 45%;
+  right: 0.5%;
+  background: rgba(85,85,85,0.9);
+  padding: 0.5%;
+  color: #fff;
+  border-radius: 2px;
+}
+
+#filter3{
+  top: 78%;
+}
+
+#controls {
+  font-size: 1em;
+  position: absolute;
+  top: 2%;
+  right: 0.5%;
+  background: rgba(85,85,85,0.9);
+  padding: 0.5%;
+  color: #fff;
+  border-radius: 2px;
+}
+
+h1{
+  font-family: "Ubuntu";
+  padding-left: 3%;
+  color: #555;
+}
+#help{
+  color: #666;
+  width: 50%;
+  margin: 0 0 2% 3%;
+}
+#help span{
+  color: #666;
+  font-size: 1.2em;
+}
+</style>
+  <h1> Les hommes du Top14</h1>
+    <p id="help"><span>Comment lire l'infographie :</span><br /><b>&#5125;</b> Les points représentent <b>tous les joueurs du Top14</b> selon leur poids et leur taille. Les différentes couleurs correspondent aux différents postes. En <b>cochant/décochant les cases</b> des postes, vous faites <b>apparaître/disparaître</b> les joueurs concernés.<br /><b>&#5125;</b> Par défaut les joueurs de toutes les équipes sont représentés. Pour supprimer les joueurs d'une équipe, <b>cliquez sur le blason</b> de l'équipe et inversement pour ajouter les joueurs d'une équipe.<br/><b>&#5125;</b> Certains joueurs ayant les mêmes caractéristiques physiques, les points les représentant peuvent se superposer en partie. Pour éviter cela, cliquez sur <em>Espacer les points</em>.   
+    <div id="effectif">
+    <div id="filter1">
+      <div class="checkbox2"><input name='s' value="Agen" type="checkbox" id="checkboxInput10" checked/><label for="checkboxInput10" id="ag" class="hint--bottom" data-hint="Agen"></label></div> 
+      <div class="checkbox2"><input name='s' value="Bordeaux" type="checkbox" id="checkboxInput11" checked/><label for="checkboxInput11" id="bo" class="hint--bottom" data-hint="Bordeaux"></label></div>
+      <div class="checkbox2"><input name='s' value="Brive" type="checkbox" id="checkboxInput12" checked/><label for="checkboxInput12" id="br" class="hint--bottom" data-hint="Brive"></label></div>
+      <div class="checkbox2"><input name='s' value="Castres" type="checkbox" id="checkboxInput13" checked/><label for="checkboxInput13" id="ca" class="hint--bottom" data-hint="Castres"></label></div>
+      <div class="checkbox2"><input name='s' value="Clermont" type="checkbox" id="checkboxInput14" checked/><label for="checkboxInput14" id="cl" class="hint--bottom" data-hint="Clermont"></label></div>
+      <div class="checkbox2"><input name='s' value="Grenoble" type="checkbox" id="checkboxInput15" checked/><label for="checkboxInput15" id="gr" class="hint--bottom" data-hint="Grenoble"></label></div>
+      <div class="checkbox2"><input name='s' value="La Rochelle" type="checkbox" id="checkboxInput16" checked/><label for="checkboxInput16" id="la" class="hint--bottom" data-hint="La Rochelle"></label></div>
+      <div class="checkbox2"><input name='s' value="Montpellier" type="checkbox" id="checkboxInput17" checked/><label for="checkboxInput17" id="mo" class="hint--bottom" data-hint="Montpellier"></label></div>
+      <div class="checkbox2"><input name='s' value="Oyonnax" type="checkbox" id="checkboxInput18" checked/><label for="checkboxInput18" id="oy" class="hint--bottom" data-hint="Oyonnax"></label></div>
+      <div class="checkbox2"><input name='s' value="Paris" type="checkbox" id="checkboxInput19" checked/><label for="checkboxInput19" id="pa" class="hint--bottom" data-hint="Paris"></label></div>
+      <div class="checkbox2"><input name='s' value="Pau" type="checkbox" id="checkboxInput20" checked/><label for="checkboxInput20" id="pau" class="hint--bottom" data-hint="Pau"></label></div>
+      <div class="checkbox2"><input name='s' value="Racing 92" type="checkbox" id="checkboxInput21" checked/><label for="checkboxInput21" id="ra" class="hint--bottom" data-hint="Racing 92"></label></div>
+      <div class="checkbox2"><input name='s' value="Toulon" type="checkbox" id="checkboxInput22" checked/><label for="checkboxInput22" id="tn" class="hint--bottom" data-hint="Toulon"></label></div>
+      <div class="checkbox2"><input name='s' value="Toulouse" type="checkbox" id="checkboxInput23" checked/><label for="checkboxInput23" id="ts" class="hint--bottom" data-hint="Toulouse"></label></div>
+
+    </div>
+    <div id="filter3">
+       <div class="checkbox"><input name='j' value="NONJIFF" type="checkbox" id="checkboxInput24" /><label for="checkboxInput24" id="jiff"></label></div><p class="boxTeam">Seulement<br />JIFF & espoirs</p>
+    </div>
+    <div id="filter2">
+    <div class="checkbox"><input name='p' value="Pilier" type="checkbox" id="checkboxInput1" checked/><label for="checkboxInput1" id="pi"></label></div><p class="boxTeam">Pilier</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Talonneur" type="checkbox" id="checkboxInput2" checked/><label for="checkboxInput2" id="ta"></label></div><p class="boxTeam">Talonneur</p>
+    <br />
+    <div class="checkbox"><input name='p' value="2ème ligne" type="checkbox" id="checkboxInput3" checked/><label for="checkboxInput3" id="de"></label></div><p class="boxTeam">2ème ligne</p>
+    <br />
+    <div class="checkbox"><input name='p' value="3ème ligne" type="checkbox" id="checkboxInput4" checked/><label for="checkboxInput4" id="tr"></label></div><p class="boxTeam">3ème ligne</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Mêlée" type="checkbox" id="checkboxInput5" checked/><label for="checkboxInput5" id="me"></label></div><p class="boxTeam">Mêlée</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Ouverture" type="checkbox" id="checkboxInput6" checked/><label for="checkboxInput6" id="ou"></label></div><p class="boxTeam">Ouverture</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Centre" type="checkbox" id="checkboxInput7" checked/><label for="checkboxInput7" id="ce"></label></div><p class="boxTeam">Centre</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Ailier" type="checkbox" id="checkboxInput8" checked/><label for="checkboxInput8" id="ai"></label></div><p class="boxTeam">Ailier</p>
+    <br />
+    <div class="checkbox"><input name='p' value="Arrière" type="checkbox" id="checkboxInput9" checked/><label for="checkboxInput9" id="ar"></label></div><p class="boxTeam">Arrière</p>
+  </div>
+  </div>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script>
+var margin = {top: 20, right: 30, bottom: 30, left: 40},
+    ww = document.getElementById("effectif").clientWidth,
+    width = ww - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+    padding = 1, // separation between nodes
+    radius = 7.5;
+
+// setup x 
+var xValue = function(d) { return d.Poids;}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return d.Taille;}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
+
+// setup fill color
+var cValue = function(d) { return d.Poste;},
+    color = d3.scale.category20();
+
+var tip = d3.tip()
+  .attr("class", "d3-tip")
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<b>" + d.Nom + "</b>" + "<br /> <em>" + d.Club + "</em> <br />" + d.Age + " - " + d.Poste + "<br />" + d.Taille + "cm - " + d.Poids + "kg";
+  });
+
+// add the graph canvas to the body of the webpage
+var svg = d3.select("div#effectif").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var controls = d3.select("div#effectif").append("label")
+    .attr("id", "controls");
+var checkbox = controls.append("input")
+    .attr("id", "collisiondetection")
+    .attr("type", "checkbox");
+controls.append("span")
+    .text("Espacer les points");
+
+svg.call(tip);
+
+// load data
+d3.csv("top14.csv", function(error, data) {
+
+  var xVar = "Poids",
+      yVar = "Taille";
+
+  // change string (from CSV) into number format
+  data.forEach(function(d) {
+    d[xVar] = +d[xVar];
+    d[yVar] = +d[yVar];
+//    console.log(d);
+  });
+
+
+  var force = d3.layout.force()
+    .nodes(data)
+    .size([width, height])
+    .on("tick", tick)
+    .charge(-1)
+    .gravity(0)
+    .chargeDistance(20);
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  xScale.domain([d3.min(data, xValue)-5, d3.max(data, xValue)+4]);
+  yScale.domain([d3.min(data, yValue)-3, d3.max(data, yValue)+4]);
+
+  data.forEach(function(d) {
+    d.xScale = xScale(d[xVar]);
+    d.yScale = yScale(d[yVar]);
+    d.radius = radius;
+  });
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .style("fill", "#888")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .style("fill", "#888")
+      .text("Poids (en kg)");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .style("fill", "#888")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .style("text-anchor", "end")
+      .style("fill", "#888")
+      .text("Taille (en cm)");
+
+  // draw dots
+  var node = svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", radius)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { return color(cValue(d));})
+      .style("opacity", 0.9)
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide) 
+
+  d3.selectAll("[name=s]").on("change", function() {
+      var selected = this.value;
+      display = this.checked ? "inline" : "none";
+
+
+  svg.selectAll(".dot")
+      .filter(function(d) {return selected == d.Club;})
+      .attr("display", display);
+      });
+
+  d3.selectAll("[name=p]").on("change", function() {
+      var selected = this.value;
+      display = this.checked ? "inline" : "none";
+
+
+  svg.selectAll(".dot")
+      .filter(function(d) {return selected == d.Poste;})
+      .attr("display", display);
+      });
+
+  d3.selectAll("[name=j]").on("change", function() {
+      var selected = this.value;
+      display = this.checked ? "none" : "inline";
+
+
+  svg.selectAll(".dot")
+      .filter(function(d) {return selected == d.JIFF;})
+      .attr("display", display);
+      });
+
+  d3.select("#collisiondetection").on("change", function() {
+    force.resume();
+    });
+  //force
+  force.start();
+
+  function tick(e) {
+    node.each(moveTowardDataPosition(e.alpha));
+
+    if (checkbox.node().checked) node.each(collide(e.alpha));
+
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  }
+
+  function moveTowardDataPosition(alpha) {
+    return function(d) {
+      d.x += (xScale(d[xVar]) - d.x) * 0.1 * alpha;
+      d.y += (yScale(d[yVar]) - d.y) * 0.1 * alpha;
+    };
+  }
+
+  // Resolve collisions between nodes.
+  function collide(alpha) {
+    var quadtree = d3.geom.quadtree(data);
+    return function(d) {
+      var r = d.radius + radius + padding,
+          nx1 = d.x - r,
+          nx2 = d.x + r,
+          ny1 = d.y - r,
+          ny2 = d.y + r;
+      quadtree.visit(function(quad, x1, y1, x2, y2) {
+        if (quad.point && (quad.point !== d)) {
+          var x = d.x - quad.point.x,
+              y = d.y - quad.point.y,
+              l = Math.sqrt(x * x + y * y),
+              r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+          if (l < r) {
+            l = (l - r) / l * alpha;
+            d.x -= x *= l;
+            d.y -= y *= l;
+            quad.point.x += x;
+            quad.point.y += y;
+          }
+        }
+        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+      });
+    };
+  }
+});
+
+</script>
+</body>
+</html>
